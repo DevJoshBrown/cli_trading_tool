@@ -1,27 +1,27 @@
 user_database = []
+count = 0
 
 
 def add_user(name, email):
-    user_number = len(user_database) + 1
+    global count  # access the count out of scope.
 
-    print(f"Adding user number: {user_number}")
-    user = {}
+    for u in user_database:
+        if u["email"] == email:
+            print(f"{email} already in use, user not added.")
+            return None
 
-    user["number"] = user_number
-    user["name"] = name
+    count += 1
 
-    unique_user = True
-
-    for existing_user in user_database:
-        if existing_user["email"] == email:
-            print(f"{email} is already in use, user:{user_number} not added.")
-            unique_user = False
-            break
-
-    if unique_user:
-        user["email"] = email
-        user_database.append(user)
+    user = {"number": count, "name": name, "email": email}
+    user_database.append(user)
+    return count
 
 
 def remove_user(email):
-    pass
+    for number, u in enumerate(user_database):
+        if u["email"] == email:
+            del user_database[number]
+            return True
+    print(f"User not found with email {email}")
+    print("No users removed")
+    return False
