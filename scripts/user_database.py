@@ -30,4 +30,16 @@ def search_user(search_term):
     for user in user_database:
         if search_term in user["name"]:
             results.append(user)
-    return results
+            return results
+    else:
+        return False
+
+
+def search_email(search_term):
+    results = []
+    for user in user_database:
+        if search_term in user["email"]:
+            results.append(user)
+            return results
+    else:
+        return False
