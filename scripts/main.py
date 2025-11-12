@@ -1,6 +1,6 @@
 import sys
 
-from user_database import add_user, search_email, user_database
+from user_database import add_user, load_user_database, search_email, user_database
 
 
 def yes_no_input(question):
@@ -75,12 +75,17 @@ def login_process():
 def create_account():
     name = string_input("What is your name")
     email = string_input("What is your email address")
-    add_user(name, email)
-    return "login success"
+    account_created = add_user(name, email)
+    if account_created:
+        return "Successfully created a new account."
+    return "Failed to make a new account."
 
 
 def main():
     print("WELCOME TO THE CLI TRADING TOOL.")
+    print("loading users...")
+    load_user_database()
+    print("loading complete.")
 
     login_failed = True
     while login_failed:
