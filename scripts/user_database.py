@@ -9,9 +9,7 @@ def add_user(name, email):
         if u["email"] == email:
             print(f"{email} already in use, user not added.")
             return None
-
     count += 1
-
     user = {"number": count, "name": name, "email": email}
     user_database.append(user)
     return count
@@ -25,3 +23,11 @@ def remove_user(email):
     print(f"User not found with email {email}")
     print("No users removed")
     return False
+
+
+def search_user(search_term):
+    results = []
+    for user in user_database:
+        if search_term in user["name"]:
+            results.append(user)
+    return results
