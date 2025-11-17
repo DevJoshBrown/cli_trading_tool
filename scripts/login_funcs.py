@@ -17,7 +17,7 @@ def login_process():
                 f"is this your account?\nNAME:{account['name']}\nEMAIL:{account['email']}"
             )
             if confirm == "yes":
-                print(f"Logging in as {account['name']}")
+                print(f"\nLogging in as {account['name']}")
                 return True, account
             if confirm == "no":
                 return False, account
