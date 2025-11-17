@@ -59,7 +59,7 @@ def add_user(name, email):
     user = {"number": count, "name": name, "email": norm_email}
     user_database.append(user)
     save_user_database()
-    return count
+    return True
 
 
 def remove_user(email):
