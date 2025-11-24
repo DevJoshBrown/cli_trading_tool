@@ -5,30 +5,24 @@ from user_database import load_user_database, save_user_database
 
 
 def log_in():
-    login_failed = True
-
-    while login_failed:
+    while True:
         result, account = login_process()
-        if result:
-            login_failed = False
-            if account is not None:
-                print(f"\nhi {account['name']}, login successful!\n")
-                return account
-
-            else:
-                login_failed = True
-                continue
+        if result and account is not None:
+            print(f"\nhi {account['name']}, login successful!\n")
+            return account
         else:
             continue
 
 
 def main():
+    # LOAD DATABASE
     print("WELCOME TO THE CLI TRADING TOOL.")
     print("loading users...")
     load_user_database()
     print("loading complete.")
 
     while True:
+        # LOG IN PROCESS
         current_user = None
         current_user = log_in()
         print(f"current user = {current_user}")
