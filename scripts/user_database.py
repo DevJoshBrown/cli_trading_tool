@@ -22,7 +22,7 @@ def load_user_database():
                     count = user["number"]
     except FileNotFoundError:
         user_database = []
-        print("No database found, starting an empty list")
+        print("No database found, created an empty list")
     except json.JSONDecodeError:
         user_database = []
         print("file is corrupted or empty")

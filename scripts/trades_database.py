@@ -1,0 +1,54 @@
+import json
+from pathlib import Path
+
+from trade import Trade
+
+trades = []
+
+
+CURRENT_FILE = Path(__file__).resolve()
+SCRIPTS_FOLDER = CURRENT_FILE.parent
+PROJECT_ROOT = SCRIPTS_FOLDER.parent
+TRADES_DATA_FILE = PROJECT_ROOT / "data" / "trades.json"
+
+
+def load_trades_database():
+    global trades
+    try:
+        with open(TRADES_DATA_FILE, "r") as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        trades = []
+        print("No database found, created an empty list")
+        return
+    except json.JSONDecodeError:
+        trades = []
+        print("file is corrupted or empty")
+        return
+
+    trades = []
+    for trade_dict in data:
+        trade_obj = Trade.from_dict(trade_dict)
+        trades.append(trade_obj)
+
+
+def save_trades_database():
+    data = []
+    for t in trades:
+        one_trade_dict = t.to_dict()
+        data.append(one_trade_dict)
+
+    try:
+        folder = TRADES_DATA_FILE.parent
+        folder.mkdir(parents=True, exist_ok=True)
+
+        tmp_path = TRADES_DATA_FILE.with_suffix(".json.tmp")
+        with open(tmp_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+
+        tmp_path.replace(TRADES_DATA_FILE)
+        return True
+    except (OSError, IOError) as e:
+        print(f"Failed to save database: {e}")
+        return False
