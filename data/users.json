@@ -1,0 +1,17 @@
+[
+    {
+        "number": 1,
+        "name": "Guest",
+        "email": "guestuser"
+    },
+    {
+        "number": 2,
+        "name": "Phoebe",
+        "email": "phoebe@sdajkda"
+    },
+    {
+        "number": 3,
+        "name": "Josh Brown",
+        "email": "josh@incepty.io"
+    }
+]
