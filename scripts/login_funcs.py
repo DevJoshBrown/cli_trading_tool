@@ -3,8 +3,6 @@ import sys
 from io_helpers import string_input, yes_no_input
 from user_database import add_user, search_email
 
-from workspace.cli_trading_tool.scripts.main import quit_program
-
 
 def login_process():
     has_account = yes_no_input("Do you have an account already?")

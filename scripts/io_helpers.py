@@ -14,7 +14,7 @@ def yes_no_input(question):
             valid = True
             return "no"
         if response == "q" or response == "Q":
-            return "quit"
+            print("CANNOT QUIT HERE, REQUIRES FIX")
         else:
             print("\ninvalid input, please try again...")
 
