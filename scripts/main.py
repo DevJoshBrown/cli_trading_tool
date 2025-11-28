@@ -1,8 +1,7 @@
 import sys
 
 from login_funcs import login_process
-from trade import Trade
-from trades_database import load_trades_database, save_trades_database
+from trades_database import load_trades_database
 from trading_actions import create_trade_for_user
 from user_database import load_user_database, save_user_database
 
@@ -45,14 +44,12 @@ def main():
             # MAIN MENU
             print(f"\n\nlogged in as {current_user['name']}")
             menu = input(
-                f"Select an option:\n[1]:Add buy/sell log\n[2]:See trade history\n[3]:Edit my account\n[4]:Log out\n[Q]:Quit program\n[{current_user['name']}]:"
+                f"\n\nSelect an option:\n[1]:Add buy/sell log\n[2]:See trade history\n[3]:Edit my account\n[4]:Log out\n[Q]:Quit program\n[{current_user['name']}]:"
             )
             if menu == "1":
-                option = input(
-                    f"\n\nSelect an option:\n[1]:create a trade\n[2]:Back to menu\n[Q]:Quit Program\n[{current_user['name']}]:"
-                )
-                if option == "1":
-                    create_trade_for_user(current_user, load_trades_database())
+                result = create_trade_for_user(current_user, load_trades_database())
+                if result == "quit":
+                    quit_program()
 
             elif menu == "2":
                 # SEE TRADE HISTORY
