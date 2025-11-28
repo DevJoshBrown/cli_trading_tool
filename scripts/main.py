@@ -34,14 +34,17 @@ def main():
                 f"Select an option:\n[1]:Add Buy/Sell Log\n[2]:See Trade History\n[3]:Edit my account\n[4]:Log Out\n[Q]:Quit Program\n[{current_user['name']}]:"
             )
             if menu == "1":
-                # ADD BUY/ SELL LOG
+                # ADD BUY / SELL LOG
                 pass
+
             elif menu == "2":
                 # SEE TRADE HISTORY
                 pass
+
             elif menu == "3":
                 # EDIT MY ACCOUNT
                 pass
+
             elif menu == "4":
                 # LOG OUT
                 print("Saving and logging out...")

@@ -16,18 +16,28 @@ def load_trades_database():
     global trades
     try:
         with open(TRADES_DATA_FILE, "r") as file:
-            data = json.load(file)
+            data = json.load(
+                file
+            )  # DATA - THIS IS WHERE THE LIST OF DICTIONARIES READ FROM THE JSON IS STORED
+
+            # BELOW ARE ALL GRACEFUL FAILURE DEFENCES
+    # If there is no trades database, create an empty list
     except FileNotFoundError:
         trades = []
         print("No database found, created an empty list")
         return
+    # If the trades database is empty or corrupt, create an empty list
     except json.JSONDecodeError:
         trades = []
         print("file is corrupted or empty")
         return
 
+    # CREATE AN EMPTY LIST TO STORE THE NEW TRADE OBJECTS (That havent been created yet)
     trades = []
+
+    # for every dictionary in the list of dicts we just loaded...
     for trade_dict in data:
+        # convert the dictionaries to trade objects one by one and append them to the list "trades[]"
         trade_obj = Trade.from_dict(trade_dict)
         trades.append(trade_obj)
 
