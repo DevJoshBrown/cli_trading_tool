@@ -46,10 +46,11 @@ def get_user_stocks(current_user, trades):
 
 def create_trade_for_user(current_user, trades):
     user_stock = get_user_stocks(current_user, trades)
+
     while True:
         print("Select an option:...")
         option = input(
-            f"\n\n[1]: View current available currencies to trade. \n[2]: View your current currency stocks \n[3]: Make a trade\n[4]: Previous menu\n[Q]: Quit the program\n[{current_user['name']}]:"
+            f"\n\n||: TRADE MENU :||\n\n[1]: View current available currencies to trade. \n[2]: View your current currency stocks \n[3]: Make a trade\n[4]: Previous menu\n[Q]: Quit the program\n\n[{current_user['name']}]:"
         )
 
         if option == "Q" or option == "q":
@@ -72,7 +73,7 @@ def create_trade_for_user(current_user, trades):
             sell_item = None
             while True:
                 buy = input(
-                    "\n Which currency would you like to buy?\n[1]: GBP\n[2]: EUR\n[3]: USD\n[4]: AUD\n[5]: CAD\n[C]: Cancel Trade\n\n[{current_user['name']}]:"
+                    f"\n Which currency would you like to buy?\n[1]: GBP\n[2]: EUR\n[3]: USD\n[4]: AUD\n[5]: CAD\n[C]: Cancel Trade\n\n[{current_user['name']}]:"
                 )
                 if buy == "1":
                     buy_item = "GBP"

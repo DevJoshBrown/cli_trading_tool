@@ -4,6 +4,16 @@ from io_helpers import string_input, yes_no_input
 from user_database import add_user, search_email
 
 
+def log_in():
+    while True:
+        result, account = login_process()
+        if result and account is not None:
+            print(f"\nhi {account['name']}, login successful!\n")
+            return account
+        else:
+            continue
+
+
 def login_process():
     has_account = yes_no_input("Do you have an account already?")
 
@@ -38,18 +48,8 @@ def login_process():
                 print("account creation failed, please try again")
             return False, None
 
-        else:  # continue as guest
-            continue_as_guest = yes_no_input("Do you want to continue as a guest?")
-            if continue_as_guest == "yes":
-                ##!!## continueasguest()
-                user = search_email("guest")
-                if user:
-                    account = user[0]
-                    print("continuing as a guest")
-                    return True, account
-                return False, None
-            elif continue_as_guest == "no":
-                return False, None
+        else:
+            return False, None
 
     else:
         raise Exception("Unexpected error, exiting the application: Errorcode-001")

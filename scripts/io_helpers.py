@@ -1,11 +1,13 @@
-import sys
+from app_control import QuitProgram
 
 
 def yes_no_input(question):
     valid = False
     while not valid:
         response = input(
-            "\n" + question + "\nPlease Enter [Y] for yes, [N] for no, or [Q] to quit: "
+            "\n"
+            + question
+            + "\nPlease enter [Y] for yes, [N] for no, or [Q] to quit, and press'ENTER': "
         )
         if response == "y" or response == "Y":
             valid = True
@@ -14,7 +16,7 @@ def yes_no_input(question):
             valid = True
             return "no"
         if response == "q" or response == "Q":
-            print("CANNOT QUIT HERE, REQUIRES FIX")
+            raise QuitProgram()
         else:
             print("\ninvalid input, please try again...")
 
@@ -23,6 +25,6 @@ def string_input(question):
     valid = False
     while not valid:
         response = input(
-            "\n" + question + "\nPlease type your response and press Enter: "
+            "\n" + question + "\nPlease type your response and press 'ENTER': "
         )
         return response
