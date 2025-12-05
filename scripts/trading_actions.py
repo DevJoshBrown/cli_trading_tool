@@ -1,3 +1,6 @@
+from workspace.cli_trading_tool.scripts.app_control import QuitProgram
+
+
 def get_market_prices(item):
     market_prices = {
         "GBP": 1.00,
@@ -71,6 +74,9 @@ def create_trade_for_user(current_user, trades):
             cancel = False
             buy_item = None
             sell_item = None
+            rounded_rate = 0.00
+            expected_rate = 0.00
+
             while True:
                 buy = input(
                     f"\n Which currency would you like to buy?\n[1]: GBP\n[2]: EUR\n[3]: USD\n[4]: AUD\n[5]: CAD\n[C]: Cancel Trade\n\n[{current_user['name']}]:"
@@ -131,5 +137,28 @@ def create_trade_for_user(current_user, trades):
                 expected_rate = price_sell / price_buy
                 rounded_rate = f"{expected_rate:.2f}"
                 print(
-                    f"for every 1 {sell_item}, you will get {rounded_rate} {buy_item}."
+                    f"\n\nfor every 1 {sell_item}, you will get {rounded_rate} {buy_item}."
                 )
+
+            print(f"\nbuying {buy_item} with {sell_item} at {rounded_rate}")
+
+            # How much does the user want to sell?
+
+            while True:
+                print("\nPress[c] to go back, or [q] to save and quit")
+                sell_amnt = input(f"how much {sell_item} do you want to sell?")
+                if sell_amnt.lower() == "c":
+                    break
+                if sell_amnt.lower() == "q":
+                    raise QuitProgram
+
+                try:
+                    sell_amnt_float = float(sell_amnt)
+                    if sell_amnt_float <= 0:
+                        print("amount must be positive")
+                        continue
+
+                    print(f"\nselling {round(sell_amnt_float, 2)} x {sell_item}.")
+                    break
+                except ValueError:
+                    print("\n\nPlease enter only numeric characters and try again.\n")
