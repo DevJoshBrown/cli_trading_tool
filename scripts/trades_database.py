@@ -29,7 +29,7 @@ def load_trades_database():
     # If the trades database is empty or corrupt, create an empty list
     except json.JSONDecodeError:
         trades = []
-        print("file is corrupted or empty")
+        # print("file is corrupted or empty")
         return
 
     # CREATE AN EMPTY LIST TO STORE THE NEW TRADE OBJECTS (That havent been created yet)
