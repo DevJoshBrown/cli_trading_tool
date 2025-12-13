@@ -62,3 +62,11 @@ def save_trades_database():
     except (OSError, IOError) as e:
         print(f"Failed to save database: {e}")
         return False
+
+
+def add_trade_to_memory(trade):
+    trades.append(trade)
+    if save_trades_database():
+        return True
+    else:
+        raise Exception("Failed to add and save the trade to the database")

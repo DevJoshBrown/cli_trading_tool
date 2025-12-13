@@ -1,4 +1,8 @@
+from datetime import datetime
+
 from app_control import QuitProgram
+from trade import Trade
+from trades_database import add_trade_to_memory
 
 
 def select_currency(current_user):
@@ -53,7 +57,7 @@ def get_user_stocks(current_user, trades):
         "GBP": 0.00,
         "EUR": 0.00,
         "USD": 0.00,
-        "AUD": 20.00,
+        "AUD": 0.00,
         "CAD": 0.00,
     }
     if trades is not None:
@@ -69,6 +73,44 @@ def get_user_stocks(current_user, trades):
 def create_deposit(current_user, trades):
     print("\nWhat currency would you like to deposit?:")
     deposit_currency = select_currency(current_user)
+    while True and deposit_currency is not None:
+        amount = input(
+            f"\nHow much {deposit_currency} do you want to deposit?\n[{current_user['name']}]:"
+        )
+        if amount.lower() == "c":
+            break
+        if amount.lower() == "q":
+            raise QuitProgram
+
+        try:
+            amount_float = float(amount)
+            if deposit_currency is not None:
+                if amount_float <= 0:
+                    print("\nERROR: Amount must be positive")
+                    continue
+            print(f"depositing {deposit_currency}:{amount_float} to your account.")
+            now = datetime.now()
+            date_now = now.strftime("%d:%m:%y")
+            time_now = now.strftime("%H:%M")
+            deposit = Trade(
+                deposit_currency,
+                "deposit",
+                amount_float,
+                0.00,
+                date_now,
+                time_now,
+                current_user["number"],
+            )
+            result = add_trade_to_memory(deposit)
+            if result:
+                print("deposit success")
+                break
+            else:
+                print("ERROR: deposit failed.")
+                break
+
+        except ValueError:
+            print("\n\nPlease enter only numeric characters and try again.\n")
 
 
 def create_trade_for_user(current_user, trades):
@@ -166,7 +208,7 @@ def create_trade_for_user(current_user, trades):
 
             # How much does the user want to sell?
 
-            while True:
+            while True and not cancel:
                 print("\nPress[c] to go back, or [q] to save and quit")
                 sell_amnt = input(f"\nHow much {sell_item} do you want to sell?")
                 if sell_amnt.lower() == "c":
