@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import trades_database
 from app_control import QuitProgram
 from trade import Trade
 from trades_database import add_trade_to_memory
@@ -65,12 +66,14 @@ def get_user_stocks(current_user, trades):
             if trade.owner_id == current_user["number"]:
                 if trade.trade_type == "buy":
                     stock[trade.item_name] += trade.quantity
+                if trade.trade_type == "deposit":
+                    stock[trade.item_name] += trade.quantity
                 if trade.trade_type == "sell":
                     stock[trade.item_name] -= trade.quantity
     return stock
 
 
-def create_deposit(current_user, trades):
+def create_deposit(current_user):
     print("\nWhat currency would you like to deposit?:")
     deposit_currency = select_currency(current_user)
     while True and deposit_currency is not None:
@@ -90,7 +93,7 @@ def create_deposit(current_user, trades):
                     continue
             print(f"depositing {deposit_currency}:{amount_float} to your account.")
             now = datetime.now()
-            date_now = now.strftime("%d:%m:%y")
+            date_now = now.strftime("%d.%m.%y")
             time_now = now.strftime("%H:%M")
             deposit = Trade(
                 deposit_currency,
@@ -113,8 +116,9 @@ def create_deposit(current_user, trades):
             print("\n\nPlease enter only numeric characters and try again.\n")
 
 
-def create_trade_for_user(current_user, trades):
-    user_stock = get_user_stocks(current_user, trades)
+def create_trade_for_user(current_user):
+    print(len(trades_database.trades))
+    user_stock = get_user_stocks(current_user, trades_database.trades)
 
     # CHECK IF USER HAS NO CURRENCIES
     has_currency = False
@@ -131,7 +135,7 @@ def create_trade_for_user(current_user, trades):
         )
 
         if option == "1":
-            create_deposit(current_user, trades)
+            create_deposit(current_user)
 
         if option == "2":
             print(
@@ -146,6 +150,7 @@ def create_trade_for_user(current_user, trades):
             return "quit"
 
     while True:
+        user_stock = get_user_stocks(current_user, trades_database.trades)
         option = input(
             f"\n||: TRADE MENU :||\n\n[1]: View current available currencies to trade. \n[2]: View your current currency stocks \n[3]: Make a trade\n[4]: Previous menu\n[Q]: Quit the program\n\n[{current_user['name']}]:"
         )
@@ -195,7 +200,7 @@ def create_trade_for_user(current_user, trades):
                     break
 
             # Calc exchange rate
-            if cancel is False:
+            if not cancel:
                 price_sell = get_market_prices(sell_item)
                 price_buy = get_market_prices(buy_item)
                 expected_rate = price_sell / price_buy
@@ -207,7 +212,6 @@ def create_trade_for_user(current_user, trades):
             print(f"\nBuying {buy_item} with {sell_item} at {rounded_rate}")
 
             # How much does the user want to sell?
-
             while True and not cancel:
                 print("\nPress[c] to go back, or [q] to save and quit")
                 sell_amnt = input(f"\nHow much {sell_item} do you want to sell?")

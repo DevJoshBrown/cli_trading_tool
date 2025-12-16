@@ -25,12 +25,12 @@ def load_trades_database():
     except FileNotFoundError:
         trades = []
         print("No database found, created an empty list")
-        return
+        return trades
     # If the trades database is empty or corrupt, create an empty list
     except json.JSONDecodeError:
         trades = []
         # print("file is corrupted or empty")
-        return
+        return trades
 
     # CREATE AN EMPTY LIST TO STORE THE NEW TRADE OBJECTS (That havent been created yet)
     trades = []
@@ -40,6 +40,7 @@ def load_trades_database():
         # convert the dictionaries to trade objects one by one and append them to the list "trades[]"
         trade_obj = Trade.from_dict(trade_dict)
         trades.append(trade_obj)
+    return trades
 
 
 def save_trades_database():

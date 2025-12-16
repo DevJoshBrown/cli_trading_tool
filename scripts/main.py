@@ -17,6 +17,7 @@ def main():
             # LOG IN PROCESS
             current_user = None
             current_user = log_in()
+            load_trades_database()
             print(f"current user = {current_user}")
 
             while current_user:
@@ -27,7 +28,7 @@ def main():
                     f"\n\nSelect an option:\n[1]:Add buy/sell log\n[2]:See trade history\n[3]:Edit my account\n[4]:Log out\n[Q]:Quit program\n[{current_user['name']}]:"
                 )
                 if menu == "1":
-                    result = create_trade_for_user(current_user, load_trades_database())
+                    result = create_trade_for_user(current_user)
                     if result == "quit":
                         raise QuitProgram
 
