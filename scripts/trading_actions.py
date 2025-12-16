@@ -2,6 +2,7 @@ from datetime import datetime
 
 import trades_database
 from app_control import QuitProgram
+from io_helpers import yes_no_input
 from trade import Trade
 from trades_database import add_trade_to_memory
 
@@ -107,6 +108,8 @@ def create_deposit(current_user):
             result = add_trade_to_memory(deposit)
             if result:
                 print("deposit success")
+
+                get_user_stocks(current_user, trades_database.trades)
                 break
             else:
                 print("ERROR: deposit failed.")
@@ -117,7 +120,6 @@ def create_deposit(current_user):
 
 
 def create_trade_for_user(current_user):
-    print(len(trades_database.trades))
     user_stock = get_user_stocks(current_user, trades_database.trades)
 
     # CHECK IF USER HAS NO CURRENCIES
@@ -195,9 +197,17 @@ def create_trade_for_user(current_user):
                 if answer is None:
                     cancel = True
                     break
+                if buy_item == answer:
+                    print(
+                        "\nSame buy and sell currency selected, please select a different currency\n"
+                    )
+                    continue
                 else:
                     sell_item = answer
                     break
+
+            if cancel or buy_item is None or sell_item is None:
+                continue
 
             # Calc exchange rate
             if not cancel:
@@ -222,15 +232,65 @@ def create_trade_for_user(current_user):
 
                 try:
                     sell_amnt_float = float(sell_amnt)
-                    if sell_item is not None:
-                        if sell_amnt_float <= 0:
-                            print("\nERROR: Amount must be positive")
-                            continue
-                        if sell_amnt_float > user_stock[sell_item]:
-                            print("\nERROR: Insufficient balance")
-                            continue
-
-                    print(f"\nselling {round(sell_amnt_float, 2)} x {sell_item}.")
-                    break
                 except ValueError:
-                    print("\n\nPlease enter only numeric characters and try again.\n")
+                    print("Error: must select a numeric value")
+                    continue
+
+                if sell_item is not None:
+                    if sell_amnt_float <= 0:
+                        print("\nERROR: Amount must be positive")
+                        continue
+                    if sell_amnt_float > user_stock[sell_item]:
+                        print("\nERROR: Insufficient balance")
+                        continue
+
+                print(f"\nselling {round(sell_amnt_float, 2)} x {sell_item}.")
+                if expected_rate > 0:
+                    purchased_quantity = sell_amnt_float * expected_rate
+                    price_per_unit_buy = 1 / expected_rate
+                else:
+                    print("ERROR: expected rate lower than 0")
+                    continue
+
+                now = datetime.now()
+                date_now = now.strftime("%d.%m.%y")
+                time_now = now.strftime("%H:%M")
+                buy = Trade(
+                    buy_item,
+                    "buy",
+                    purchased_quantity,
+                    price_per_unit_buy,
+                    date_now,
+                    time_now,
+                    current_user["number"],
+                )
+                sell = Trade(
+                    sell_item,
+                    "sell",
+                    sell_amnt_float,
+                    expected_rate,
+                    date_now,
+                    time_now,
+                    current_user["number"],
+                )
+
+                confirmation = yes_no_input(
+                    "\nSell {sell_amnt_float} {sell_item} for {buy_item} {purchased_quantity}?\n"
+                )
+                if confirmation == "yes":
+                    buy_success = add_trade_to_memory(buy)
+                    if buy_success:
+                        sell_success = add_trade_to_memory(sell)
+                        if sell_success:
+                            print("Trade completed successfully.")
+                            break
+                        else:
+                            print(
+                                "Trade failed at sell save, trades database now incorrect."
+                            )
+                    else:
+                        print("Trade failed at buy save, aborting trade.")
+                        continue
+                else:
+                    print("Trade Cancelled")
+                    continue
