@@ -1,0 +1,2 @@
+1. Add option to create starting balances
+2. Add functionality for user to chose main currency
