@@ -1,5 +1,6 @@
 from app_control import QuitProgram, quit_program
-from login_funcs import log_in
+from login_funcs import edit_account, log_in
+from trade_history import create_trade_report
 from trades_database import load_trades_database
 from trading_actions import create_trade_for_user
 from user_database import load_user_database, save_user_database
@@ -33,12 +34,12 @@ def main():
                         raise QuitProgram
 
                 elif menu == "2":
-                    # SEE TRADE HISTORY
-                    pass
+                    create_trade_report(current_user)
 
                 elif menu == "3":
-                    # EDIT MY ACCOUNT
-                    pass
+                    result = edit_account(current_user)
+                    if result == "deleted":
+                        current_user = None
 
                 elif menu == "4":
                     # LOG OUT

@@ -28,3 +28,24 @@ def string_input(question):
             "\n" + question + "\nPlease type your response and press 'ENTER': "
         )
         return response
+
+
+def select_currency(current_user):
+    while True:
+        option = input(
+            f"[1]: GBP\n[2]: EUR\n[3]: USD\n[4]: AUD\n[5]: CAD\n[C]: Cancel Trade\n[{current_user['name']}]:"
+        )
+        if option == "1" or option.lower() == "gbp":
+            return "GBP"
+        if option == "2" or option.lower() == "eur":
+            return "EUR"
+        if option == "3" or option.lower() == "usd":
+            return "USD"
+        if option == "4" or option.lower() == "aud":
+            return "AUD"
+        if option == "5" or option.lower() == "cad":
+            return "CAD"
+        if option.lower() == "c":
+            return None
+        else:
+            print("Invalid input")

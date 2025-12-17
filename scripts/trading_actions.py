@@ -2,30 +2,9 @@ from datetime import datetime
 
 import trades_database
 from app_control import QuitProgram
-from io_helpers import yes_no_input
+from io_helpers import select_currency, yes_no_input
 from trade import Trade
 from trades_database import add_trade_to_memory
-
-
-def select_currency(current_user):
-    while True:
-        option = input(
-            f"[1]: GBP\n[2]: EUR\n[3]: USD\n[4]: AUD\n[5]: CAD\n[C]: Cancel Trade\n[{current_user['name']}]:"
-        )
-        if option == "1" or option.lower() == "gbp":
-            return "GBP"
-        if option == "2" or option.lower() == "eur":
-            return "EUR"
-        if option == "3" or option.lower() == "usd":
-            return "USD"
-        if option == "4" or option.lower() == "aud":
-            return "AUD"
-        if option == "5" or option.lower() == "cad":
-            return "CAD"
-        if option.lower() == "c":
-            return None
-        else:
-            print("Invalid input")
 
 
 def get_market_prices(item):
@@ -94,7 +73,7 @@ def create_deposit(current_user):
                     continue
             print(f"depositing {deposit_currency}:{amount_float} to your account.")
             now = datetime.now()
-            date_now = now.strftime("%d.%m.%y")
+            date_now = now.strftime("%y.%m.%d")
             time_now = now.strftime("%H:%M")
             deposit = Trade(
                 deposit_currency,
@@ -125,13 +104,13 @@ def create_trade_for_user(current_user):
     # CHECK IF USER HAS NO CURRENCIES
     has_currency = False
     for i in user_stock:
-        if user_stock[i] != 0.00:
+        if user_stock[i] > 0.00:
             has_currency = True
             break
 
     # SUGGEST USER DEPOSITS IF NO CURRENCIES
     if not has_currency:
-        print("You currently have no currencies in your account.")
+        print("\nYou currently have no currencies in your account.")
         option = input(
             f"would you like to make a deposit? \n[1]: Yes\n[2]: No\n[3]: Previous menu\n[Q]: Quit the program\n\n[{current_user['name']}]:"
         )
@@ -154,7 +133,7 @@ def create_trade_for_user(current_user):
     while True:
         user_stock = get_user_stocks(current_user, trades_database.trades)
         option = input(
-            f"\n||: TRADE MENU :||\n\n[1]: View current available currencies to trade. \n[2]: View your current currency stocks \n[3]: Make a trade\n[4]: Previous menu\n[Q]: Quit the program\n\n[{current_user['name']}]:"
+            f"\n||: TRADE MENU :||\n\n[1]: List tradable assets \n[2]: View your current currency stocks \n[3]: Make a trade\n[4]: Previous menu\n[Q]: Quit the program\n\n[{current_user['name']}]:"
         )
 
         if option == "Q" or option == "q":
@@ -253,7 +232,7 @@ def create_trade_for_user(current_user):
                     continue
 
                 now = datetime.now()
-                date_now = now.strftime("%d.%m.%y")
+                date_now = now.strftime("%y.%m.%d")
                 time_now = now.strftime("%H:%M")
                 buy = Trade(
                     buy_item,
@@ -275,7 +254,7 @@ def create_trade_for_user(current_user):
                 )
 
                 confirmation = yes_no_input(
-                    "\nSell {sell_amnt_float} {sell_item} for {buy_item} {purchased_quantity}?\n"
+                    f"\nSell {sell_amnt_float} {sell_item} for {buy_item} {purchased_quantity}?\n"
                 )
                 if confirmation == "yes":
                     buy_success = add_trade_to_memory(buy)

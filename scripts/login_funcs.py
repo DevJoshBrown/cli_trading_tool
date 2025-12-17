@@ -1,7 +1,10 @@
 import sys
 
+import trades_database
+import user_database
+from app_control import QuitProgram
 from io_helpers import string_input, yes_no_input
-from user_database import add_user, search_email
+from user_database import add_user, save_user_database, search_email
 
 
 def log_in():
@@ -63,3 +66,74 @@ def create_account():
     account_created = add_user(name, email)
 
     return account_created  # True or False depending on success.
+
+
+def edit_username(current_user):
+    new_name = string_input("What would you like your new username to be?")
+    confirm = yes_no_input(
+        f"Changing your name from {current_user['name']} to {new_name}, are you sure?"
+    )
+    if confirm == "yes":
+        current_user["name"] = new_name
+        save_user_database()
+
+    elif confirm == "no":
+        print("Name change cancelled.")
+
+
+def edit_email(current_user):
+    new_email = string_input("What would you like your new email to be?")
+    confirm = yes_no_input(
+        f"Changing your email from {current_user['email']} to {new_email}, are you sure?"
+    )
+    if confirm == "yes":
+        current_user["email"] = new_email
+        save_user_database()
+
+    elif confirm == "no":
+        print("Email change cancelled.")
+
+
+def delete_account(current_user):
+    print(
+        "Deleting your account will remove your user and all your trades from the system, this process is irreversible."
+    )
+    confirm = yes_no_input("Are you sure you want to delete your account?")
+    if confirm == "yes":
+        user_id = current_user["number"]
+        for user in user_database.user_database:
+            if user["number"] == user_id:
+                user_database.user_database.remove(user)
+                break
+        user_database.save_user_database()
+        new_trade_list = []
+        for trade in trades_database.trades:
+            if trade.owner_id != user_id:
+                new_trade_list.append(trade)
+        trades_database.trades = new_trade_list
+        trades_database.save_trades_database()
+        return "deleted"
+
+    elif confirm == "no":
+        print("Account deletion cancelled.")
+
+
+def edit_account(current_user):
+    while True:
+        option = input(
+            f"\nWhat would you like to do?\n[1]: Change my username\n[2]: Change my email\n[3]: Delete my account\n[C]: Previous menu\n[Q]: Save & Quit\n\n[{current_user['name']}]:"
+        )
+        if option == "1":
+            edit_username(current_user)
+        if option == "2":
+            edit_email(current_user)
+        if option == "3":
+            deleted = delete_account(current_user)
+            if deleted == "deleted":
+                print("account deleted")
+                current_user = None
+                return "deleted"
+        if option.lower() == "c":
+            break
+        if option.lower() == "q":
+            raise QuitProgram
